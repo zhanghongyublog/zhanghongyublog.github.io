@@ -48,9 +48,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/03/21/hello-world/">Hello World~ welcome to my blog!my name is zhy!</a>
+      <a class="article-title" href="/2018/03/21/hello-world/">微信小程序中include和import的区别</a>
     </h1>
   
 
@@ -83,11 +83,66 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><hr>
+<p>import<br>import是用来导入模板。</p>
+<p>include<br>includes用来导入除模板以外的内容。</p>
+<hr>
+<h1 id="区别"><a href="#区别" class="headerlink" title="区别"></a>区别</h1><h2 id="一、引用区别"><a href="#一、引用区别" class="headerlink" title="一、引用区别"></a>一、引用区别</h2><hr>
+<p>看例子</p>
+<p>一、创建一个文件夹test,里面包含一个test.wxml(只做模板测试，其他文件可省略)；<br>二、test.wxml内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;template name=&quot;test&quot;&gt;</span><br><span class="line">     template inner</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">template outer</span><br></pre></td></tr></table></figure>
+<p>三、在index页面中导入该test.wxml，（注意：同一个文件即可以被import也可被includes）<br>第一段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//将test.wxml中的template中的内容到进来</span><br><span class="line">&lt;import src=&apos;./test/test.wxml&apos; /&gt;</span><br><span class="line">&lt;template is=&quot;test&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>第二段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//将test.wxml中template以外的内容导进来</span><br><span class="line">&lt;include src=&apos;tools/test/test.wxml&apos; /&gt;</span><br></pre></td></tr></table></figure>
+<p>第一段和第二段可以同时存在，</p>
+<p>当只有第一段代码时，index.wxml中的内容是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">template inner</span><br></pre></td></tr></table></figure>
+<p>当只有第二段代码时，index.wxml中的内容是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">template outer</span><br></pre></td></tr></table></figure>
+<p>当两段代码同时存在，index.wxml中的内容是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">template inner template outer</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="一、引用区别-1"><a href="#一、引用区别-1" class="headerlink" title="一、引用区别"></a>一、引用区别</h2><hr>
+<p>import有作用域的概念，即在一个文件中导入test模板，则只能在当前这个文件使用这个模板，在其他文件中是不能使用test模板的。</p>
+<p>例子：<br>testA.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;template name=&quot;testA&quot;&gt;</span><br><span class="line">     testA template </span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<p>testB.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;import src=&apos;./testA.wxml&apos; /&gt;</span><br><span class="line">&lt;template is=&quot;testA&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;template name=&quot;testB&quot;&gt;</span><br><span class="line">     testB template </span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<p>index.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;import src=&apos;../../tools/test/testb.wxml&apos; /&gt;</span><br><span class="line">&lt;template is=&quot;testB&quot; /&gt;</span><br><span class="line">&lt;template is=&quot;testA&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">appservice:30 WXMLRT_$gwx:index.wxml:template:35:14: Template `testA` not found</span><br></pre></td></tr></table></figure>
+<hr>
+<p>可以把include理解成复制粘贴。</p>
+<hr>
+<p>testA.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;template name=&quot;testA&quot;&gt;</span><br><span class="line">    testA template</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">    testA template outer</span><br></pre></td></tr></table></figure>
+<p>testB.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;include src=&apos;./testa.wxml&apos;/&gt;</span><br><span class="line">&lt;template name=&quot;testB&quot;&gt;</span><br><span class="line">    testB template</span><br><span class="line">&lt;/template&gt;</span><br><span class="line">    testB template outer</span><br></pre></td></tr></table></figure>
+<p>index.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;include src=&apos;../../tools/test/testb.wxml&apos; /&gt;</span><br></pre></td></tr></table></figure>
+<p>渲染后的index.wxml</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">testA template outer testB template outer</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="结合使用"><a href="#结合使用" class="headerlink" title="结合使用"></a>结合使用</h1><hr>
+<p>使用场景：<br>比如，你使用template自定义了一个toast框，形如这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;template name=&quot;toast&quot;&gt;</span><br><span class="line">    .......</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<p>在页面中使用，则需要这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;import src=&quot;tools/toast/toast.wxml&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;toast&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>并且，每个页面都需要引用一遍。这时候，又自定义了一个popup框，每个需要popup的页面，又都需要引用一遍popup.wxml。不仅如此，当你的小程序越来越大，自定义的模板越来越多，每个页面都是下面这种样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;import src=&quot;tools/toast/toast.wxml&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;toast&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;import src=&quot;tools/popup/popup.wxml&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;popup&quot; /&gt;</span><br><span class="line"></span><br><span class="line">&lt;import src=&quot;tools/xxx/xxx.wxml&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;xxx&quot; /&gt;</span><br><span class="line">........</span><br></pre></td></tr></table></figure>
+<p>还有一个就是，当你改变某个自定义组件的路径，则每个页面都需要改变一次；这时候，我们可以利用include的属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;import src=&quot;tools/toast/toast.wxml&quot;/&gt;</span><br><span class="line">&lt;import src=&quot;tools/popup/popup.wxml&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;wetoast&quot;/&gt;</span><br><span class="line">&lt;template is=&quot;popup&quot;/&gt;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>每个使用自定义组件的页面，只需要一句代码即可，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;include src=&quot;template.wxml&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>只需要固定template.wxml的位置，即便更改自定义组件的路径，在template中更改一次即可。是不是又偷到懒了~~~</p>
+<hr>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/03/21/hello-world/" data-id="cjf11k2ra0000x0uvuy57soys" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2018/03/21/hello-world/" data-id="cjf12gnba0000t4uvwsw8ebfb" class="article-share-link">Teilen</a>
       
       
     </footer>
@@ -113,7 +168,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Archiv</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li></ul>
     </div>
@@ -123,12 +178,12 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">letzter Beitrag</h3>
     <div class="widget">
       <ul>
         
           <li>
-            <a href="/2018/03/21/hello-world/">Hello World~ welcome to my blog!my name is zhy!</a>
+            <a href="/2018/03/21/hello-world/">微信小程序中include和import的区别</a>
           </li>
         
       </ul>
@@ -144,7 +199,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2018 John Doe<br>
-      Propulsé par <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
